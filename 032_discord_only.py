@@ -5,7 +5,6 @@ import sys
 from discord.ext.commands import Bot
 mb = Bot(command_prefix='!') # Creates the main bot object - asynchronous
 
-scheduled = False
 
 @mb.event
 async def on_message(message):
@@ -21,9 +20,9 @@ async def on_message(message):
 @mb.event
 async def on_ready():
     #if a CLI arg is passed, run that scheduled task and quit
-    if(len(sys.argv) == 2 and sys.argv[1] in commands.scheduled):
-        scheduled = True
+    if(scheduled):
         await getattr(commands, sys.argv[1])(mb)
         os._exit(0)
 
+scheduled = len(sys.argv) == 2 and sys.argv[1] in commands.scheduled
 mb.run(open("TOKEN.txt", "r").readline())
