@@ -16,6 +16,7 @@ import math
 import json, math, discord
 from collections import defaultdict
 
+RELAY = False
 RACE = False
 ENDPOINT = "https://haloruns.com/api/" # API ENDPOINT for HaloRuns.com
 NOTIFS_CHANNEL_ID = 768914577311662091 # Hard-coded #live-streams channel - need to change this if the channel gets replaced
