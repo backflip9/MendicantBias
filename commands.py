@@ -89,53 +89,52 @@ async def maintainTwitchNotifs():
 	### Then it calls the function to remove what doesn't belong any longer
 	### This ought to be changed almost entirely, i hate looking at this abomination
 
-	while True:
-		await asyncio.sleep(10) # Update interval, seconds
-		streams = []
-		print("looking for streams to post")
-		responses = []
-		postedStreamList = []
+        streams = []
+        print("looking for streams to post")
+        responses = []
+        postedStreamList = []
 #        try:
-		streamsData = requests.get(str(ENDPOINT + "streams"))
-		try:
-			streams = streamsData.json()
-		except:
-			print("LOGGING", "[" + str(time.ctime())[:-5] + "]" + " | STREAM UPDATE FAILURE\n")
-			log = open("log.txt", "a")
-			log_string = "[" + str(time.ctime())[:-5] + "]" + " | STREAM UPDATE FAILURE\n"
-			log.write(log_string, str(streamsData))
-			log.close()
-		log = open("log.txt", "a")
-		print("LOGGING", "[" + str(time.ctime())[:-5] + "]" + " | STREAM UPDATE\n")
-		log_string = "[" + str(time.ctime())[:-5] + "]" + " | STREAM UPDATE\n"
-		log.write(log_string)
+        streamsData = requests.get(str(ENDPOINT + "streams"))
+        try:
+                streams = streamsData.json()
+        except:
+                print("LOGGING", "[" + str(time.ctime())[:-5] + "]" + " | STREAM UPDATE FAILURE\n")
+                log = open("log.txt", "a")
+                log_string = "[" + str(time.ctime())[:-5] + "]" + " | STREAM UPDATE FAILURE\n"
+                log.write(log_string, str(streamsData))
+                log.close()
+        log = open("log.txt", "a")
+        print("LOGGING", "[" + str(time.ctime())[:-5] + "]" + " | STREAM UPDATE\n")
+        log_string = "[" + str(time.ctime())[:-5] + "]" + " | STREAM UPDATE\n"
+        log.write(log_string)
 #        print(streams)
-		for stream in streams:
-			log.write(str(stream["stream"] + "\n"))
-		log.close()
+        for stream in streams:
+                log.write(str(stream["stream"] + "\n"))
+        log.close()
 #        except:
 #            print("stream pull failed")
-		postedStreams = await mb.get_channel(NOTIFS_CHANNEL_ID).history(oldest_first = True).flatten()
-		postedStreams = postedStreams[1:]
-		for stream in postedStreams:
-			postedStreamList.append(stream.content)
+        postedStreams = await mb.get_channel(NOTIFS_CHANNEL_ID).history(oldest_first = True).flatten()
+        postedStreams = postedStreams[1:]
+        for stream in postedStreams:
+                postedStreamList.append(stream.content)
 #        try:
-		if streams != []:
+        if streams != []:
 #            config = loadConfig()
-			for stream in streams:
-				if stream["stream"] not in postedStreamList:
+                for stream in streams:
+                        if stream["stream"] not in postedStreamList:
 #                        if config[stream["#" + "stream".lower()]]["muted"] == False:
-					responses.append(stream["stream"])
-			streamsChannel = mb.get_channel(NOTIFS_CHANNEL_ID)
-			if responses != "":
-				for response in responses:
-						await streamsChannel.send(response)
+                                responses.append(stream["stream"])
+                streamsChannel = mb.get_channel(NOTIFS_CHANNEL_ID)
+                if responses != "":
+                        for response in responses:
+                                        await streamsChannel.send(response)
 #        except:
 #            print("Failed posting new streams")
-		parsedStreams = []
-		for stream in streams:
-			parsedStreams.append(stream["stream"])
-		await purgeNotStreams(parsedStreams)
+        parsedStreams = []
+        for stream in streams:
+                parsedStreams.append(stream["stream"])
+        await purgeNotStreams(parsedStreams)
+
 async def purgeNotStreams(streams):
 	### Removes any streams present in the #live-streams channel that are not in the current stream list
 
