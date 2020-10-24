@@ -14,13 +14,12 @@ import datetime
 import time
 import math
 import json, math, discord
-from collections import defaultdict
 
 RELAY = False
 RACE = False
 ENDPOINT = "https://haloruns.com/api/" # API ENDPOINT for HaloRuns.com
-NOTIFS_CHANNEL_ID = 768914577311662091 # Hard-coded #live-streams channel - need to change this if the channel gets replaced
-RECORDS_CHANNEL_ID = NOTIFS_CHANNEL_ID # Hard-coded #wr-runs channel - need to change this if the channel gets replaced
+NOTIFS_CHANNEL_ID = 768952840457551903 # Hard-coded #live-streams channel - need to change this if the channel gets replaced
+RECORDS_CHANNEL_ID = 768914577311662091 # Hard-coded #wr-runs channel - need to change this if the channel gets replaced
 TEST_CHANNEL = NOTIFS_CHANNEL_ID # Wackee's test channel
 RECORDS_CHANNEL_ID = NOTIFS_CHANNEL_ID
 NO_STREAMS_TEXT = "Nobody is currently streaming" + "<:NotLikeThis:257718094049443850>" # Default text used when there are no current streamers
@@ -84,7 +83,7 @@ async def announce(mb, record):
 	except:
 		print("record announcement failed")
 
-async def maintainTwitchNotifs():
+async def maintainTwitchNotifs(mb):
 	### Adds any streams in the current stream list that are not present in the #live-streams channel
 	### Then it calls the function to remove what doesn't belong any longer
 	### This ought to be changed almost entirely, i hate looking at this abomination
@@ -133,9 +132,9 @@ async def maintainTwitchNotifs():
         parsedStreams = []
         for stream in streams:
                 parsedStreams.append(stream["stream"])
-        await purgeNotStreams(parsedStreams)
+        await purgeNotStreams(mb, parsedStreams)
 
-async def purgeNotStreams(streams):
+async def purgeNotStreams(mb, streams):
 	### Removes any streams present in the #live-streams channel that are not in the current stream list
 
 	flat = await mb.get_channel(NOTIFS_CHANNEL_ID).history(oldest_first=True).flatten() # returns a flattened ordered list of all present messages in the channel
@@ -262,15 +261,13 @@ def getTimeStood(record, prev_record):
 	return result
 
 def ordinalize(rank):
-	### yoinked
-	SUFFIXES = {1: 'st', 2: 'nd', 3: 'rd'}
 	# I'm checking for 10-20 because those are the digits that
 	# don't follow the normal counting scheme. 
-	if 10 <= rank % 100 <= 20:
+	if ((rank % 100) // 2) == 1:
 		suffix = 'th'
 	else:
 		# the second parameter is a default.
-		suffix = SUFFIXES.get(rank % 10, 'th')
+		suffix = {1: 'st', 2: 'nd', 3: 'rd'}.get(rank % 10, 'th')
 	return str(rank) + suffix
 
 async def raceCountdown(ret=False):
@@ -310,7 +307,7 @@ async def points(message):
 
 def calc(message):
     print('message')
-    game_abbreviations = { k:([k] + defaultdict(lambda: list(), {"hce": ["h1", "ce"]})[k]) for k in ["reach", "hce", "h2", "h2a", "h3", "odst", "h4", "h5"] }
+    game_abbreviations = { k:([k] + {"hce": ["h1", "ce"]}.get(k, list())]) for k in ["reach", "hce", "h2", "h2a", "h3", "odst", "h4", "h5"] }
     matches = list(filter(lambda x: message.lower().split()[1] in x[1], game_abbreviations.items()))
     return f"https://haloruns.com/timeCalc/{matches[0][0]}" if len(matches) > 0 else None
 
