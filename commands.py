@@ -17,14 +17,10 @@ import json, math, discord
 
 RELAY = False
 RACE = False
-ENDPOINT = "https://haloruns.com/api/" # API ENDPOINT for HaloRuns.com
-NOTIFS_CHANNEL_ID = 768952840457551903 # Hard-coded #live-streams channel - need to change this if the channel gets replaced
-RECORDS_CHANNEL_ID = 768914577311662091 # Hard-coded #wr-runs channel - need to change this if the channel gets replaced
-TEST_CHANNEL = NOTIFS_CHANNEL_ID # Wackee's test channel
-RECORDS_CHANNEL_ID = NOTIFS_CHANNEL_ID
-NO_STREAMS_TEXT = "Nobody is currently streaming" + "<:NotLikeThis:257718094049443850>" # Default text used when there are no current streamers
-SOME_STREAMS_TEXT = "CURRENTLY LIVE:\n- - - - - - - - - - - - -" # Default text used when there are some current streamers
-TUT_ENDPOINT = "haloruns.info/tutorial?id=" # Once we get tutorials off the ground, this can be used to add commands for any number of tutorials present on the .info site
+COMMANDS_FILE = 'commands.json'
+CONFIG_FILE = 'config.json'
+for key, value in json.loads(open(CONFIG_FILE, 'r').read()).items():
+    globals()[key] = value
 
 async def apiRecentWRs():
 	### Returns the most recent records list, and replaces the locally stored records list with a new one.
@@ -307,15 +303,15 @@ async def points(message):
 
 def calc(message):
     print('message')
-    game_abbreviations = { k:([k] + {"hce": ["h1", "ce"]}.get(k, list())]) for k in ["reach", "hce", "h2", "h2a", "h3", "odst", "h4", "h5"] }
+    game_abbreviations = { k:([k] + {"hce": ["h1", "ce"]}.get(k, list())) for k in ["reach", "hce", "h2", "h2a", "h3", "odst", "h4", "h5"] }
     matches = list(filter(lambda x: message.lower().split()[1] in x[1], game_abbreviations.items()))
     return f"https://haloruns.com/timeCalc/{matches[0][0]}" if len(matches) > 0 else None
 
 async def find(txt):
-    txt_result = defaultdict(lambda: None, json.loads(open('commands.json').read()))[txt]
+    txt_result = json.loads(open(COMMANDS_FILE).read()).get(txt, None)
     if(txt_result):
         return txt_result
     func_name = txt.split(' ')[0]
     return await globals()[func_name](txt) if func_name in ['race', 'points', 'calc'] else None
 
-scheduled = [ 'raceCountdown', 'lookForRecord', 'maintainTwitchNotifs' ]
+scheduled = [ raceCountdown, lookForRecord, maintainTwitchNotifs ]

@@ -1,0 +1,10 @@
+{
+  "ENDPOINT": "https:\/\/haloruns.com\/api\/",
+  "NOTIFS_CHANNEL_ID": 768914577311662091,
+  "RECORDS_CHANNEL_ID": 768914577311662091,
+  "TEST_CHANNEL": 768914577311662091,
+  "RECORDS_CHANNEL_ID": 768914577311662091,
+  "NO_STREAMS_TEXT": "Nobody is currently streaming<:NotLikeThis:257718094049443850>",
+  "SOME_STREAMS_TEXT": "CURRENTLY LIVE:\n- - - - - - - - - - - - -",
+  "TUT_ENDPOINT": "haloruns.info\/tutorial?id="
+}
