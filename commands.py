@@ -19,6 +19,7 @@ RELAY = False
 RACE = False
 COMMANDS_FILE = 'commands.json'
 CONFIG_FILE = 'config.json'
+ENDPOINT = NOTIFS_CHANNEL_ID = RECORDS_CHANNEL_ID = TEST_CHANNEL = RECORDS_CHANNEL_ID = STREAM_INFO_MESSAGE = NO_STREAMS_TEXT = SOME_STREAMS_TEXT = TUT_ENDPOINT = None
 for key, value in json.loads(open(CONFIG_FILE, 'r').read()).items():
     globals()[key] = value
 
