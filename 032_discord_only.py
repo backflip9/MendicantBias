@@ -25,5 +25,8 @@ async def on_ready():
         await getattr(commands, sys.argv[1])(mb)
         os._exit(0)
 
-scheduled = len(sys.argv) == 2 and sys.argv[1] in list(map(lambda func: func.__name__, commands.scheduled))
+scheduled = len(sys.argv) == 2 and \
+                sys.argv[1] in \
+                list(map(lambda func: func.__name__, commands.scheduled))
+
 mb.run(open("TOKEN.txt", "r").readline())
