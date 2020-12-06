@@ -3,7 +3,7 @@ import os
 import discord
 import sys
 from discord.ext.commands import Bot
-mb = Bot(command_prefix='!') # Creates the main bot object - asynchronous
+mb = Bot(command_prefix='!')  # Creates the main bot object - asynchronous
 
 
 @mb.event
@@ -17,9 +17,10 @@ async def on_message(message):
         else:
             await message.channel.send(response_content)
 
+
 @mb.event
 async def on_ready():
-    #if a CLI arg is passed, run that scheduled task and quit
+    # if a CLI arg is passed, run that scheduled task and quit
     if(scheduled):
         await getattr(commands, sys.argv[1])(mb)
         os._exit(0)
